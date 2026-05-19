@@ -1,8 +1,11 @@
-import 'dotenv/config';
-import express from 'express';
-import OpenAI from 'openai';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import express from "express";
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,84 +13,68 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-const PROMPT_ID = process.env.OPENAI_PROMPT_ID || 'pmpt_6a0bb18ce2dc8197ad1c36a0c7812f020dea6ea8c9eba53b';
-const PROMPT_VERSION = process.env.OPENAI_PROMPT_VERSION || '1';
+const PRINCIPAL_PROMPT_ID =
+  process.env.OPENAI_PRINCIPAL_PROMPT_ID ||
+  "pmpt_6a0bba6d1fd4819786666591bafceb9e08591b2d4759ba51";
 
-app.use(express.json({ limit: '1mb' }));
+const PRINCIPAL_PROMPT_VERSION =
+  process.env.OPENAI_PRINCIPAL_PROMPT_VERSION || "1";
+
+app.use(cors({
+  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : true,
+}));
+app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
 
-function extractOutputText(response) {
-  if (response.output_text) return response.output_text;
-
-  const parts = [];
-  for (const item of response.output || []) {
-    for (const content of item.content || []) {
-      if (content.type === 'output_text' && content.text) {
-        parts.push(content.text);
-      }
-    }
-  }
-
-  return parts.join('\n').trim();
-}
-
-app.post('/api/vcc-agent', async (req, res) => {
+app.post("/api/asesor-principal", async (req, res) => {
   try {
-    const { message, profile, profileSummary, previousResponseId } = req.body || {};
-
-    if (!message || typeof message !== 'string') {
-      return res.status(400).json({ error: 'Message is required.' });
-    }
-
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({ error: 'Missing OPENAI_API_KEY on the server.' });
+      return res.status(500).json({
+        error: "Falta configurar OPENAI_API_KEY en el archivo .env.",
+      });
     }
 
-    const websiteContext = [
-      profileSummary ? `Investor profile selected on website: ${profileSummary}` : '',
-      profile ? `Raw profile JSON: ${JSON.stringify(profile)}` : ''
-    ].filter(Boolean).join('\n');
+    const message = String(req.body?.message || "").trim();
+    const topic = String(req.body?.topic || message || "Consulta de inversión").trim();
+    const previousResponseId = req.body?.previousResponseId || undefined;
 
-    const input = [
-      websiteContext,
-      `User message: ${message}`
-    ].filter(Boolean).join('\n\n');
+    if (!message) {
+      return res.status(400).json({
+        error: "El mensaje es obligatorio.",
+      });
+    }
 
-    const responsePayload = {
+    const response = await openai.responses.create({
       prompt: {
-        id: PROMPT_ID,
-        version: PROMPT_VERSION
+        id: PRINCIPAL_PROMPT_ID,
+        version: PRINCIPAL_PROMPT_VERSION,
+        variables: {
+          topic,
+        },
       },
-      input
-    };
-
-    if (previousResponseId) {
-      responsePayload.previous_response_id = previousResponseId;
-    }
-
-    const response = await client.responses.create(responsePayload);
-    const reply = extractOutputText(response) || 'The assistant did not return text. Please try again.';
+      input: message,
+      previous_response_id: previousResponseId,
+    });
 
     res.json({
-      reply,
-      response_id: response.id
+      responseId: response.id,
+      reply: response.output_text || "El agente no devolvió texto.",
     });
   } catch (error) {
-    console.error('OpenAI agent error:', error);
+    console.error("Error invoking Asesor Principal.ai:", error);
+
     res.status(500).json({
-      error: error.message || 'Error calling the OpenAI agent.'
+      error:
+        error?.message ||
+        "Error invocando Asesor Principal.ai desde OpenAI.",
     });
   }
-});
-
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
-  console.log(`VCC50000 site running at http://localhost:${port}`);
+  console.log(`VCC50000 web running at http://localhost:${port}`);
 });

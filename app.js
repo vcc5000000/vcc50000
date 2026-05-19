@@ -7,16 +7,15 @@ const profileCta = document.getElementById('profileCta');
 const resetProfile = document.getElementById('resetProfile');
 const profileSummary = document.getElementById('profileSummary');
 const form = document.getElementById('contactForm');
+const advisorModal = document.getElementById('advisorModal');
+const advisorForm = document.getElementById('advisorForm');
+const advisorInput = document.getElementById('advisorInput');
+const advisorMessages = document.getElementById('advisorMessages');
+const advisorSubmit = document.getElementById('advisorSubmit');
+const principalAdvisorButtons = document.querySelectorAll('[data-principal-advisor]');
+const ASESOR_API_ENDPOINT = window.VCC50000_ASESOR_API_URL || '/api/asesor-principal';
+let advisorPreviousResponseId = null;
 
-const API_AGENT_ENDPOINT = '/api/vcc-agent';
-const apiAgentOpeners = document.querySelectorAll('[data-api-agent-open]');
-const apiChatPanel = document.getElementById('apiChatPanel');
-const apiChatClose = document.getElementById('apiChatClose');
-const apiChatForm = document.getElementById('apiChatForm');
-const apiChatInput = document.getElementById('apiChatInput');
-const apiChatMessages = document.getElementById('apiChatMessages');
-const apiChatSend = document.getElementById('apiChatSend');
-let apiAgentPreviousResponseId = null;
 
 const profile = {
   client: '',
@@ -112,112 +111,112 @@ if (form) {
 }
 
 
-function openApiChat() {
-  if (!apiChatPanel) return;
-  apiChatPanel.classList.add('open');
-  apiChatPanel.setAttribute('aria-hidden', 'false');
-  setTimeout(() => apiChatInput && apiChatInput.focus(), 80);
+function openAdvisorModal() {
+  if (!advisorModal) return;
+  advisorModal.classList.add('open');
+  advisorModal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+
+  setTimeout(() => {
+    if (advisorInput) advisorInput.focus();
+  }, 120);
 }
 
-function closeApiChat() {
-  if (!apiChatPanel) return;
-  apiChatPanel.classList.remove('open');
-  apiChatPanel.setAttribute('aria-hidden', 'true');
+function closeAdvisorModal() {
+  if (!advisorModal) return;
+  advisorModal.classList.remove('open');
+  advisorModal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
 }
 
-function appendApiMessage(role, text) {
-  if (!apiChatMessages) return;
+function addAdvisorMessage(message, type = 'assistant') {
+  if (!advisorMessages) return;
 
-  const message = document.createElement('div');
-  message.className = `api-message ${role}`;
-  message.textContent = text;
-  apiChatMessages.appendChild(message);
-  apiChatMessages.scrollTop = apiChatMessages.scrollHeight;
+  const bubble = document.createElement('div');
+  bubble.className = `advisor-message ${type}`;
+  bubble.textContent = message;
+  advisorMessages.appendChild(bubble);
+  advisorMessages.scrollTop = advisorMessages.scrollHeight;
 }
 
-function setApiChatLoading(isLoading) {
-  if (apiChatSend) {
-    apiChatSend.disabled = isLoading;
-    apiChatSend.textContent = isLoading ? 'Sending...' : 'Send';
+function setAdvisorLoading(isLoading) {
+  if (advisorSubmit) {
+    advisorSubmit.disabled = isLoading;
+    advisorSubmit.textContent = isLoading ? 'Consultando...' : 'Enviar';
   }
 
-  if (apiChatInput) {
-    apiChatInput.disabled = isLoading;
+  if (advisorInput) {
+    advisorInput.disabled = isLoading;
   }
 }
 
-apiAgentOpeners.forEach((button) => {
-  button.addEventListener('click', openApiChat);
+principalAdvisorButtons.forEach((button) => {
+  button.addEventListener('click', openAdvisorModal);
 });
 
-if (apiChatClose) {
-  apiChatClose.addEventListener('click', closeApiChat);
-}
-
-if (apiChatPanel) {
-  apiChatPanel.addEventListener('click', (event) => {
-    if (event.target === apiChatPanel) {
-      closeApiChat();
-    }
-  });
-}
+document.querySelectorAll('[data-advisor-close]').forEach((button) => {
+  button.addEventListener('click', closeAdvisorModal);
+});
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeApiChat();
+  if (event.key === 'Escape' && advisorModal && advisorModal.classList.contains('open')) {
+    closeAdvisorModal();
   }
 });
 
-if (apiChatInput) {
-  apiChatInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      apiChatForm && apiChatForm.requestSubmit();
-    }
-  });
-}
-
-if (apiChatForm) {
-  apiChatForm.addEventListener('submit', async (event) => {
+if (advisorForm) {
+  advisorForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const message = apiChatInput.value.trim();
+    const message = advisorInput ? advisorInput.value.trim() : '';
     if (!message) return;
 
-    appendApiMessage('user', message);
-    apiChatInput.value = '';
-    setApiChatLoading(true);
+    addAdvisorMessage(message, 'user');
+    advisorForm.reset();
+    setAdvisorLoading(true);
 
     try {
-      const response = await fetch(API_AGENT_ENDPOINT, {
+      const response = await fetch(ASESOR_API_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           message,
-          profile,
-          profileSummary: (profileSummary && profileSummary.value) || '',
-          previousResponseId: apiAgentPreviousResponseId
+          topic: message,
+          previousResponseId: advisorPreviousResponseId
         })
       });
+
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const text = await response.text();
+        const startsWithHtml = text.trim().startsWith('<');
+        throw new Error(
+          startsWithHtml
+            ? 'El frontend está recibiendo HTML en vez de JSON. En GitHub Pages esto pasa porque /api/asesor-principal no existe. Publica server.js en Render, Railway o Vercel y coloca esa URL en config.js.'
+            : 'El servidor no devolvió JSON. Revisa la URL del backend en config.js.'
+        );
+      }
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'The assistant could not answer right now.');
+        throw new Error(data.error || 'No se pudo invocar el agente.');
       }
 
-      apiAgentPreviousResponseId = data.response_id || apiAgentPreviousResponseId;
-      appendApiMessage('assistant', data.reply || 'I did not receive a response. Please try again.');
+      advisorPreviousResponseId = data.responseId || advisorPreviousResponseId;
+      addAdvisorMessage(data.reply || 'El agente no devolvió texto.', 'assistant');
     } catch (error) {
-      appendApiMessage('assistant', `Connection error: ${error.message}`);
+      console.error(error);
+      addAdvisorMessage(error.message || 'No pude conectar con Asesor Principal.ai. Revisa que el backend esté publicado y que OPENAI_API_KEY esté configurado.', 'assistant error');
     } finally {
-      setApiChatLoading(false);
-      apiChatInput && apiChatInput.focus();
+      setAdvisorLoading(false);
+      if (advisorInput) advisorInput.focus();
     }
   });
 }
+
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
