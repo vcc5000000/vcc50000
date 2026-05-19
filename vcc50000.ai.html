@@ -1,796 +1,366 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VCC50000 | Florida Real Estate Dashboard</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  />
-
-  <link rel="stylesheet" href="styles.css" />
+  <title>VCC50000 | Asset Management, Trading & Florida Real Estate</title>
+  <meta name="description" content="VCC50000 provides asset management solutions, market intelligence, portfolio advisory, trading frameworks, and Florida real estate guidance." />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="bg-orb orb-3"></div>
-
-  <!-- FLOATING DICTIONARY BUTTON -->
-  <button
-    type="button"
-    class="floating-glossary-btn open-glossary"
-    aria-label="Abrir diccionario"
-  >
-    <span class="floating-glossary-icon">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 18h.01"></path>
-        <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 3-3 3"></path>
-        <path d="M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0Z"></path>
-      </svg>
-    </span>
-    <span>Dictionary</span>
-  </button>
-
-  <!-- FLOATING AI ASSISTANT BUTTON -->
-  <button
-    id="assistantLauncher"
-    type="button"
-    class="assistant-launcher"
-    aria-label="Abrir asistente virtual"
-  >
-    <span class="assistant-launcher-icon">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 3C7.03 3 3 6.58 3 11c0 2.22 1.02 4.23 2.68 5.69V21l4.12-2.27c.71.18 1.45.27 2.2.27 4.97 0 9-3.58 9-8s-4.03-8-9-8Z"></path>
-        <path d="M8.5 11h.01"></path>
-        <path d="M12 11h.01"></path>
-        <path d="M15.5 11h.01"></path>
-      </svg>
-    </span>
-    <span>VCC50000 AI</span>
-  </button>
-
-  <!-- GLOSSARY DRAWER -->
-  <div id="glossaryDrawer" class="glossary-drawer" aria-hidden="true">
-    <div id="glossaryOverlay" class="glossary-overlay"></div>
-
-    <aside
-      class="glossary-panel"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="glossaryTitle"
-    >
-      <div class="glossary-head">
-        <div>
-          <span class="eyebrow">Knowledge Center</span>
-          <h2 id="glossaryTitle"><span data-brand>VCC50000</span> Definitions</h2>
-          <p>
-            Busca cualquier término y explícalo fácilmente al cliente en cualquier momento.
-          </p>
+  <header class="topbar">
+    <div class="container nav" id="nav">
+      <a href="#home" class="brand" aria-label="VCC50000 home">
+        <div class="brand-mark">V</div>
+        <div class="brand-text">
+          VCC50000
+          <span>ASSET MANAGEMENT</span>
         </div>
+      </a>
 
-        <button
-          type="button"
-          id="closeGlossaryBtn"
-          class="glossary-close-btn"
-          aria-label="Cerrar diccionario"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 6 6 18"></path>
-            <path d="m6 6 12 12"></path>
-          </svg>
-        </button>
-      </div>
-
-      <div class="glossary-search-wrap">
-        <svg class="glossary-search-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="m20 20-3.5-3.5"></path>
-        </svg>
-        <input
-          type="text"
-          id="glossarySearch"
-          placeholder="Buscar: NOI, DSCR, Purchase Price, Vacancy..."
-          autocomplete="off"
-        />
-      </div>
-
-      <div class="glossary-chip-row">
-        <span class="glossary-chip">Inputs</span>
-        <span class="glossary-chip">Debt</span>
-        <span class="glossary-chip">Metrics</span>
-        <span class="glossary-chip">Returns</span>
-        <span class="glossary-chip">Equity</span>
-      </div>
-
-      <div id="glossaryList" class="glossary-list"></div>
-    </aside>
-  </div>
-
-  <!-- AI ASSISTANT DRAWER -->
-  <div id="assistantDrawer" class="assistant-drawer" aria-hidden="true">
-    <div id="assistantOverlay" class="assistant-overlay"></div>
-
-    <aside
-      class="assistant-panel"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="assistantTitle"
-    >
-      <div class="assistant-head">
-        <div>
-          <span class="eyebrow">Virtual Assistant</span>
-          <h2 id="assistantTitle">VCC50000 AI</h2>
-          <p>
-            Asistente comercial para explicar métricas, revisar deals, interpretar
-            supuestos y acompañar la presentación.
-          </p>
-        </div>
-
-        <button
-          id="assistantCloseBtn"
-          type="button"
-          class="assistant-close-btn"
-          aria-label="Cerrar asistente"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18 6 6 18"></path>
-            <path d="m6 6 12 12"></path>
-          </svg>
-        </button>
-      </div>
-
-      <div class="assistant-card">
-        <span class="assistant-card-label">Access</span>
-        <h3>Open the GPT in ChatGPT</h3>
-        <p>
-          El cliente puede abrir el asistente y consultarle cualquier término,
-          métrica o lectura del deal.
-        </p>
-
-        <div class="assistant-actions">
-          <a
-            id="assistantOpenLink"
-            class="assistant-primary-btn"
-            href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Open VCC50000 AI
-          </a>
-
-          <button id="assistantCopyLinkBtn" type="button" class="assistant-secondary-btn">
-            Copy link
-          </button>
-        </div>
-      </div>
-
-      <div class="assistant-card">
-        <span class="assistant-card-label">Quick prompts</span>
-        <h3>Prompts para cliente</h3>
-        <p>
-          Haz clic en cualquiera para copiarlo. Luego el cliente lo pega dentro del GPT.
-        </p>
-
-        <div class="assistant-prompt-list">
-          <button type="button" class="assistant-prompt-btn" data-prompt="Explícame este deal en términos simples para un inversionista.">
-            Explain this deal simply
-          </button>
-
-          <button type="button" class="assistant-prompt-btn" data-prompt="Explícame qué significa DSCR y por qué importa en esta propiedad.">
-            Explain DSCR
-          </button>
-
-          <button type="button" class="assistant-prompt-btn" data-prompt="Explícame el NOI de esta propiedad y cómo se calcula.">
-            Explain NOI
-          </button>
-
-          <button type="button" class="assistant-prompt-btn" data-prompt="Dime cuáles son los principales riesgos de este deal con base en purchase price, rent, vacancy y debt.">
-            Main risks of this deal
-          </button>
-
-          <button type="button" class="assistant-prompt-btn" data-prompt="Explícame si este deal luce fuerte, intermedio o débil y por qué.">
-            Rate this deal
-          </button>
-
-          <button type="button" class="assistant-prompt-btn" data-prompt="Explícame qué significa Exit Cap Rate y cómo afecta el valor de salida.">
-            Explain Exit Cap Rate
-          </button>
-        </div>
-      </div>
-
-      <div class="assistant-card">
-        <span class="assistant-card-label">Use cases</span>
-        <h3>Qué puede hacer en la presentación</h3>
-        <ul class="assistant-usecases">
-          <li>Explicar cada campo del modelo</li>
-          <li>Traducir métricas técnicas a lenguaje comercial</li>
-          <li>Responder preguntas del cliente en vivo</li>
-          <li>Dar contexto sobre el deal y sus riesgos</li>
-        </ul>
-      </div>
-
-      <p id="assistantStatus" class="assistant-status neutral">Assistant ready.</p>
-    </aside>
-  </div>
-
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand-wrap">
-        <div class="brand-mark">
-          <span>VCC</span>
-        </div>
-
-        <div>
-          <h1 data-brand>VCC50000</h1>
-          <p>Florida acquisition dashboard for client-ready presentations.</p>
-        </div>
-      </div>
-
-      <div class="sidebar-showcase">
-        <span class="eyebrow">Florida Positioning</span>
-        <h2>Ocean color, luxury housing, market clarity.</h2>
-        <p>
-          Branding visual inspirado en Florida con soporte comercial y financiero.
-        </p>
-      </div>
-
-      <nav class="nav-menu">
-        <button class="nav-item active" data-screen="loginScreen" type="button">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3 4 8v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-5Z"></path>
-              <path d="M9 22V12h6v10"></path>
-            </svg>
-          </span>
-          <span>Acceso</span>
-        </button>
-
-        <button class="nav-item" data-screen="dashboardScreen" type="button">
-          <span class="nav-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M3 13h8V3H3v10Zm10 8h8V11h-8v10ZM3 21h8v-6H3v6Zm10-10h8V3h-8v8Z"></path>
-            </svg>
-          </span>
-          <span>Dashboard</span>
-        </button>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#services">Services</a>
+        <a href="#real-estate">Florida Real Estate</a>
+        <a href="#assistant">AI Assistant</a>
+        <a href="#process">Process</a>
+        <a href="#contact">Contact</a>
       </nav>
 
-      <div class="sidebar-panel">
-        <span class="eyebrow">Client Tools</span>
-        <h3>Definitions + Zillow</h3>
-        <p>
-          El cliente puede consultar definiciones al instante y abrir Zillow desde el panel.
-        </p>
+      <div class="nav-actions">
+        <a class="btn btn-outline" href="#onboarding">Explore</a>
+        <a class="btn btn-dark" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Open AI Assistant</a>
+        <a class="btn btn-primary" href="#contact">Book Consultation</a>
+      </div>
 
-        <div class="sidebar-actions">
-          <button type="button" class="knowledge-btn open-glossary">
-            <span class="knowledge-btn-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"></path>
-              </svg>
-            </span>
-            <span>Open Dictionary</span>
-          </button>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
 
-          <a
-            class="zillow-btn"
-            href="https://www.zillow.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="knowledge-btn-icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"></path>
-              </svg>
-            </span>
-            <span>Open Zillow</span>
-          </a>
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <div class="eyebrow"><span class="pulse"></span> Multi-Asset Strategy · Markets · Florida Real Estate</div>
+          <h1>Asset management vision for investors building long-term value.</h1>
+          <p>
+            VCC50000 helps investors structure smarter decisions across portfolios, market intelligence,
+            trading frameworks, and Florida real estate opportunities.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#onboarding">Start Investor Profile</a>
+            <a class="btn btn-dark" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Open VCC50000 AI</a>
+            <a class="btn btn-outline" href="#real-estate">Explore Real Estate</a>
+          </div>
+          <div class="hero-note">
+            Strategic guidance for investors, traders, entrepreneurs, and buyers looking to diversify capital with a disciplined process.
+          </div>
         </div>
-      </div>
 
-      <div class="sidebar-panel map-mini-panel">
-        <span class="eyebrow">State Focus</span>
-        <img src="assets/florida-highlight-map.png" alt="Mapa de Estados Unidos con Florida resaltada" />
-      </div>
-
-      <div class="sidebar-panel session-card">
-        <span class="eyebrow">Session</span>
-        <strong id="sessionState">Invitado</strong>
-        <p id="sessionHint">Debes iniciar sesión para acceder al dashboard.</p>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <!-- LOGIN -->
-      <section id="loginScreen" class="screen active-screen">
-        <div class="login-layout">
-          <div class="login-hero">
-            <div class="hero-copy">
-              <span class="eyebrow"><span data-brand>VCC50000</span> Florida Investment Suite</span>
-              <h2>Presenta oportunidades inmobiliarias de Florida con una experiencia visual más fuerte.</h2>
-              <p>
-                Dashboard premium con análisis, soporte comercial, fotos de referencia,
-                diccionario integrado y acceso directo a Zillow.
-              </p>
+        <aside class="dashboard-card reveal" aria-label="Investment dashboard preview">
+          <div class="mini-header">
+            <div>
+              <div class="mini-title">VCC50000 Dashboard</div>
+              <small class="mini-subtitle">Portfolio intelligence preview</small>
             </div>
+            <div class="status"><span class="pulse"></span> Live Strategy</div>
+          </div>
 
-            <div class="hero-stat-grid">
-              <article class="hero-stat-card">
-                <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"></path>
-                  </svg>
-                </div>
-                <div>
-                  <span>Asset Focus</span>
-                  <strong>SFR / Small Multifamily</strong>
-                </div>
-              </article>
-
-              <article class="hero-stat-card">
-                <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 19V5M10 19V9M16 19V12M22 19V3"></path>
-                  </svg>
-                </div>
-                <div>
-                  <span>Core Metrics</span>
-                  <strong>NOI, DSCR, IRR, Exit Value</strong>
-                </div>
-              </article>
-
-              <article class="hero-stat-card">
-                <div class="hero-stat-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <span>Knowledge Module</span>
-                  <strong>Definitions for any client</strong>
-                </div>
-              </article>
+          <div class="metrics">
+            <div class="metric">
+              <span>Focus</span>
+              <strong>Multi-Asset</strong>
             </div>
-
-            <div class="hero-visual-grid">
-              <article class="hero-visual hero-visual-main">
-                <img src="assets/florida-house-1.jpg" alt="Casa residencial de Florida" />
-                <div class="visual-badge">Florida Homes</div>
-              </article>
-
-              <article class="hero-visual hero-visual-map">
-                <img src="assets/florida-state-map.png" alt="Mapa del estado de Florida" />
-              </article>
-
-              <article class="hero-visual hero-visual-gator">
-                <img src="assets/florida-gator.png" alt="Imagen de cocodrilo asociado a Florida" />
-              </article>
-
-              <article class="hero-visual hero-visual-secondary">
-                <img src="assets/florida-house-2.jpg" alt="Casa moderna de Florida" />
-              </article>
+            <div class="metric">
+              <span>Approach</span>
+              <strong>Risk-First</strong>
+            </div>
+            <div class="metric">
+              <span>Markets</span>
+              <strong>Stocks / ETFs</strong>
+            </div>
+            <div class="metric">
+              <span>Real Estate</span>
+              <strong>Florida</strong>
             </div>
           </div>
 
-          <div class="login-card">
-            <div class="login-card-top">
-              <span class="eyebrow">Secure Entry</span>
-              <h2>Welcome back</h2>
-              <p>Accede al dashboard ejecutivo de <span data-brand>VCC50000</span>.</p>
+          <div class="chart">
+            <div class="chart-caption">Strategic allocation model</div>
+            <svg viewBox="0 0 520 210" role="img" aria-label="Stylized investment chart">
+              <defs>
+                <linearGradient id="goldFill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#c8a24a" stop-opacity="0.34" />
+                  <stop offset="100%" stop-color="#c8a24a" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <path d="M0,165 C45,145 60,170 104,137 C150,103 181,132 220,100 C272,58 302,92 340,73 C389,47 417,70 456,40 C485,18 505,30 520,22 L520,210 L0,210 Z" fill="url(#goldFill)" />
+              <path d="M0,165 C45,145 60,170 104,137 C150,103 181,132 220,100 C272,58 302,92 340,73 C389,47 417,70 456,40 C485,18 505,30 520,22" fill="none" stroke="#c8a24a" stroke-width="5" stroke-linecap="round" />
+              <path d="M0,178 C60,165 88,156 140,150 C210,142 255,126 300,112 C370,91 432,70 520,54" fill="none" stroke="#111827" stroke-width="3" stroke-dasharray="8 10" stroke-linecap="round" opacity="0.6" />
+            </svg>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="onboarding">
+      <div class="container">
+        <div class="onboarding reveal">
+          <div class="step-dots" aria-hidden="true">
+            <span class="dot active"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
+          </div>
+
+          <div class="selector-group">
+            <h3>What type of client are you?</h3>
+            <p class="hint">Choose the profile that best describes your current objective.</p>
+            <div class="card-grid selectable-group" data-group="client">
+              <button class="select-card" data-value="Individual Investor"><span class="icon">👤</span> Individual Investor</button>
+              <button class="select-card" data-value="Active Trader"><span class="icon">⚡</span> Active Trader</button>
+              <button class="select-card" data-value="Real Estate Buyer"><span class="icon">🏠</span> Real Estate Buyer</button>
+              <button class="select-card" data-value="Family Office / Company"><span class="icon">🏛️</span> Family Office / Company</button>
             </div>
+          </div>
 
-            <form id="loginForm" class="login-form">
-              <label>
-                <span>Email</span>
-                <input type="email" id="email" placeholder="analyst@vcc50000.com" required />
-              </label>
+          <div class="selector-group">
+            <h3>What are you most interested in?</h3>
+            <p class="hint">You may select multiple areas.</p>
+            <div class="card-grid selectable-group multiple" data-group="interest">
+              <button class="select-card" data-value="Asset Management"><span class="icon">📊</span> Asset Management</button>
+              <button class="select-card" data-value="Portfolio Advisory"><span class="icon">🧭</span> Portfolio Advisory</button>
+              <button class="select-card" data-value="Stocks & ETFs"><span class="icon">📈</span> Stocks & ETFs</button>
+              <button class="select-card" data-value="Trading Strategies"><span class="icon">🎯</span> Trading Strategies</button>
+              <button class="select-card" data-value="Market Research"><span class="icon">🔎</span> Market Research</button>
+              <button class="select-card" data-value="Florida Real Estate"><span class="icon">🌴</span> Florida Real Estate</button>
+              <button class="select-card" data-value="Alternative Assets"><span class="icon">💎</span> Alternative Assets</button>
+              <button class="select-card" data-value="Risk Management"><span class="icon">🛡️</span> Risk Management</button>
+            </div>
+          </div>
 
-              <label>
-                <span>Contraseña</span>
-                <input type="password" id="password" placeholder="••••••••" required />
-              </label>
+          <div class="selector-group">
+            <h3>What is your experience level?</h3>
+            <p class="hint">This helps us customize the conversation.</p>
+            <div class="card-grid selectable-group experience-grid" data-group="experience">
+              <button class="select-card" data-value="Beginner"><span class="icon">🌱</span> Beginner</button>
+              <button class="select-card" data-value="Intermediate"><span class="icon">🔥</span> Intermediate</button>
+              <button class="select-card" data-value="Advanced"><span class="icon">🚀</span> Advanced</button>
+            </div>
+          </div>
 
-              <label class="remember-row">
-                <input type="checkbox" checked />
-                <span>Recordar sesión en este dispositivo</span>
-              </label>
-
-              <button type="submit" class="primary-btn">Entrar al Dashboard</button>
-
-              <p class="hint">Demo: cualquier email válido + contraseña de 4 o más caracteres.</p>
-              <p id="loginMessage" class="message"></p>
-            </form>
+          <div class="selector-actions">
+            <a class="btn btn-primary" id="profileCta" href="#contact">Continue</a>
+            <button class="btn btn-outline" id="resetProfile" type="button">Reset Choices</button>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- DASHBOARD -->
-      <section id="dashboardScreen" class="screen">
-        <header class="topbar">
-          <div class="topbar-copy">
-            <span class="eyebrow"><span data-brand>VCC50000</span> Florida Acquisition Dashboard</span>
-            <h2>Tampa Bay Residential Opportunity</h2>
+    <section id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>Integrated services for capital growth and protection.</h2>
+          <p>VCC50000 connects market intelligence, portfolio thinking, and real estate analysis into one strategic investment framework.</p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal">
+            <div class="service-icon">📊</div>
+            <h3>Asset Management</h3>
+            <p>Capital allocation, portfolio monitoring, diversification frameworks, and risk-adjusted decision support.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">🧭</div>
+            <h3>Portfolio Advisory</h3>
+            <p>Custom portfolio structure across stocks, ETFs, fixed income, real estate, and alternative assets.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">⚡</div>
+            <h3>Trading Intelligence</h3>
+            <p>Market research, watchlists, trade ideas, trend analysis, and disciplined execution frameworks.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">📈</div>
+            <h3>Stocks & ETFs</h3>
+            <p>Investment screening, sector rotation, long-term themes, ETF mapping, and market opportunity analysis.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">🌴</div>
+            <h3>Florida Real Estate</h3>
+            <p>Guidance for buyers and investors evaluating residential, rental, and long-term wealth opportunities in Florida.</p>
+          </article>
+
+          <article class="service-card reveal">
+            <div class="service-icon">🛡️</div>
+            <h3>Risk Management</h3>
+            <p>Scenario analysis, position sizing logic, drawdown control, concentration review, and portfolio resilience planning.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="real-estate">
+      <div class="container split">
+        <div class="real-estate-panel reveal">
+          <h2>Florida Real Estate Solutions</h2>
+          <p>
+            We assist local and international clients in identifying, evaluating, and acquiring properties in Florida. From financing orientation to rental potential analysis, VCC50000 provides strategic support throughout the acquisition process.
+          </p>
+          <a class="btn btn-primary" href="#contact">Request Property Strategy</a>
+        </div>
+
+        <div class="real-grid">
+          <article class="real-card reveal">
+            <h3>Buyer Representation</h3>
+            <p>Support in defining budget, location, property type, offer strategy, inspection, and closing coordination.</p>
+          </article>
+          <article class="real-card reveal">
+            <h3>Investment Screening</h3>
+            <p>Property analysis based on area, rent potential, HOA fees, insurance, taxes, and resale perspective.</p>
+          </article>
+          <article class="real-card reveal">
+            <h3>Rental Income Analysis</h3>
+            <p>Evaluation of annual rental, seasonal rental, vacancy assumptions, management costs, and operating expenses.</p>
+          </article>
+          <article class="real-card reveal">
+            <h3>ROI / Cap Rate Orientation</h3>
+            <p>Clear investment metrics including NOI, cash flow, cap rate, cash-on-cash return, and debt impact.</p>
+          </article>
+          <article class="real-card reveal">
+            <h3>Financing Guidance</h3>
+            <p>Orientation around pre-approval, down payment, lender requirements, closing costs, and cash reserves.</p>
+          </article>
+          <article class="real-card reveal">
+            <h3>Market Selection</h3>
+            <p>Miami, Orlando, Tampa, Fort Lauderdale, Jacksonville, and other Florida markets based on client strategy.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="assistant">
+      <div class="container">
+        <div class="assistant-section reveal">
+          <div>
+            <h2>Access the VCC50000 AI Assistant.</h2>
             <p>
-              Front comercial con lectura financiera, imágenes de Florida y diccionario integrado.
+              Use the assistant as a guided entry point for asset management orientation, market intelligence questions, portfolio preparation, and Florida real estate buyer support.
+            </p>
+          </div>
+          <div class="assistant-box">
+            <strong>VCC50000.ai Assistant</strong>
+            <span>Connect directly with the GPT assistant for structured guidance before scheduling a consultation.</span>
+            <a class="btn btn-primary" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Launch GPT Assistant</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>A disciplined process for every investor profile.</h2>
+          <p>From discovery to execution, the goal is to define the right strategy before deploying capital.</p>
+        </div>
+
+        <div class="process">
+          <article class="process-step reveal">
+            <div class="num">1</div>
+            <h3>Discovery</h3>
+            <p>We identify your goals, experience, timeline, risk profile, budget, and preferred asset classes.</p>
+          </article>
+          <article class="process-step reveal">
+            <div class="num">2</div>
+            <h3>Strategy</h3>
+            <p>We build a structured plan around allocation, markets, real estate, liquidity, and expected outcomes.</p>
+          </article>
+          <article class="process-step reveal">
+            <div class="num">3</div>
+            <h3>Analysis</h3>
+            <p>We evaluate opportunities using data, comparable assets, risk factors, and capital efficiency.</p>
+          </article>
+          <article class="process-step reveal">
+            <div class="num">4</div>
+            <h3>Execution</h3>
+            <p>We guide next steps, documentation, partner coordination, monitoring, and strategic review.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="contact reveal">
+          <div>
+            <h2>Build your investment strategy with VCC50000.</h2>
+            <p>
+              Tell us what you want to achieve. We will help you organize the next step across asset management, market intelligence, trading strategy, or Florida real estate.
+            </p>
+            <div class="contact-list">
+              <div>📍 Focus: United States · Florida Real Estate</div>
+              <div>📧 Email: contact@vcc50000.com</div>
+              <div>💬 WhatsApp: +1 000 000 0000</div>
+              <div>🕒 Consultation by appointment</div>
+            </div>
+            <p class="disclaimer">
+              Replace the email and phone with your official company contact information before publishing.
             </p>
           </div>
 
-          <div class="topbar-actions">
-            <button type="button" class="secondary-btn open-glossary">Definitions</button>
-            <a
-              class="secondary-btn secondary-link-btn"
-              href="https://www.zillow.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Zillow
-            </a>
-            <button id="loadDefaults" class="secondary-btn" type="button">Reset Florida Base</button>
-            <button id="logoutBtn" class="secondary-btn" type="button">Cerrar sesión</button>
-          </div>
-        </header>
-
-        <section class="spotlight-grid">
-          <article class="spotlight-card spotlight-property">
-            <div class="spotlight-copy">
-              <span class="eyebrow">Property Spotlight</span>
-              <h3>Florida housing visual identity</h3>
-              <p>
-                Integra una narrativa más atractiva para cliente: propiedades,
-                ubicación, branding y consulta de conceptos financieros.
-              </p>
-              <a
-                class="spotlight-link"
-                href="https://www.zillow.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Browse on Zillow
-              </a>
+          <form id="contactForm">
+            <div class="form-row">
+              <input type="text" name="name" placeholder="Full name" required />
+              <input type="email" name="email" placeholder="Email address" required />
             </div>
-            <div class="spotlight-image">
-              <img src="assets/florida-house-2.jpg" alt="Casa de Florida destacada" />
+            <div class="form-row">
+              <select name="service" required>
+                <option value="">Service of interest</option>
+                <option>Asset Management</option>
+                <option>Portfolio Advisory</option>
+                <option>Trading Intelligence</option>
+                <option>Stocks & ETFs</option>
+                <option>Florida Real Estate</option>
+                <option>Risk Management</option>
+              </select>
+              <select name="budget">
+                <option value="">Investment range</option>
+                <option>Under $100,000</option>
+                <option>$100,000 - $250,000</option>
+                <option>$250,000 - $500,000</option>
+                <option>$500,000 - $1,000,000</option>
+                <option>$1,000,000+</option>
+              </select>
             </div>
-          </article>
-
-          <article class="spotlight-card spotlight-map">
-            <div class="mini-media-block">
-              <img src="assets/florida-state-map.png" alt="Mapa detallado de Florida" />
-            </div>
-            <div class="mini-media-block">
-              <img src="assets/florida-gator.png" alt="Cocodrilo de Florida" />
-            </div>
-          </article>
-        </section>
-
-        <div class="dashboard-grid">
-          <section class="panel input-panel">
-            <div class="panel-head">
-              <div>
-                <span class="eyebrow">Underwriting Inputs</span>
-                <h3>Supuestos de adquisición</h3>
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <label>
-                <div class="label-row">
-                  <span>Purchase Price</span>
-                  <button type="button" class="inline-help" data-term="Purchase Price" aria-label="Ver definición de Purchase Price">?</button>
-                </div>
-                <input type="number" id="purchasePrice" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Monthly Rent</span>
-                  <button type="button" class="inline-help" data-term="Monthly Rent" aria-label="Ver definición de Monthly Rent">?</button>
-                </div>
-                <input type="number" id="monthlyRent" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Visible Expenses</span>
-                  <button type="button" class="inline-help" data-term="Visible Expenses" aria-label="Ver definición de Visible Expenses">?</button>
-                </div>
-                <input type="number" id="visibleExpenses" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Vacancy Rate (%)</span>
-                  <button type="button" class="inline-help" data-term="Vacancy Rate" aria-label="Ver definición de Vacancy Rate">?</button>
-                </div>
-                <input type="number" id="vacancyRate" step="0.1" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>CapEx Monthly</span>
-                  <button type="button" class="inline-help" data-term="CapEx" aria-label="Ver definición de CapEx">?</button>
-                </div>
-                <input type="number" id="capex" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Insurance Monthly</span>
-                  <button type="button" class="inline-help" data-term="Insurance" aria-label="Ver definición de Insurance">?</button>
-                </div>
-                <input type="number" id="insurance" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Interest Rate (%)</span>
-                  <button type="button" class="inline-help" data-term="Interest Rate" aria-label="Ver definición de Interest Rate">?</button>
-                </div>
-                <input type="number" id="interestRate" step="0.01" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>LTV (%)</span>
-                  <button type="button" class="inline-help" data-term="LTV" aria-label="Ver definición de LTV">?</button>
-                </div>
-                <input type="number" id="ltv" step="0.1" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Loan Years</span>
-                  <button type="button" class="inline-help" data-term="Loan Years" aria-label="Ver definición de Loan Years">?</button>
-                </div>
-                <input type="number" id="loanYears" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Rent Growth (%)</span>
-                  <button type="button" class="inline-help" data-term="Rent Growth" aria-label="Ver definición de Rent Growth">?</button>
-                </div>
-                <input type="number" id="rentGrowth" step="0.1" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Exit Cap Rate (%)</span>
-                  <button type="button" class="inline-help" data-term="Exit Cap Rate" aria-label="Ver definición de Exit Cap Rate">?</button>
-                </div>
-                <input type="number" id="exitCapRate" step="0.1" />
-              </label>
-
-              <label>
-                <div class="label-row">
-                  <span>Hold Years</span>
-                  <button type="button" class="inline-help" data-term="Hold Years" aria-label="Ver definición de Hold Years">?</button>
-                </div>
-                <input type="number" id="holdYears" />
-              </label>
-            </div>
-          </section>
-
-          <section class="metrics-grid">
-            <article class="metric-card ocean">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 1 1 0 7H6"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>NOI Monthly</span>
-                <button type="button" class="inline-help" data-term="NOI" aria-label="Ver definición de NOI">?</button>
-              </div>
-              <strong id="noiMonthly">$0</strong>
-            </article>
-
-            <article class="metric-card ocean">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M4 19V5M10 19V9M16 19V12M22 19V3"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>NOI Annual</span>
-                <button type="button" class="inline-help" data-term="NOI" aria-label="Ver definición de NOI">?</button>
-              </div>
-              <strong id="noiAnnual">$0</strong>
-            </article>
-
-            <article class="metric-card coral">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"></path><path d="M21 3v9h-9"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Debt Service</span>
-                <button type="button" class="inline-help" data-term="Debt Service" aria-label="Ver definición de Debt Service">?</button>
-              </div>
-              <strong id="debtService">$0</strong>
-            </article>
-
-            <article class="metric-card teal">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M3 17 9 11l4 4 8-8"></path><path d="M14 7h7v7"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Cash Flow</span>
-                <button type="button" class="inline-help" data-term="Cash Flow" aria-label="Ver definición de Cash Flow">?</button>
-              </div>
-              <strong id="cashFlow">$0</strong>
-            </article>
-
-            <article class="metric-card sand">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M3 3v18h18"></path><path d="M7 14h2M11 10h2M15 7h2M15 14h2"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Expense Ratio</span>
-                <button type="button" class="inline-help" data-term="Expense Ratio" aria-label="Ver definición de Expense Ratio">?</button>
-              </div>
-              <strong id="expenseRatio">0%</strong>
-            </article>
-
-            <article class="metric-card sun">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path><circle cx="12" cy="12" r="4"></circle></svg>
-              </div>
-              <div class="metric-meta">
-                <span>DSCR</span>
-                <button type="button" class="inline-help" data-term="DSCR" aria-label="Ver definición de DSCR">?</button>
-              </div>
-              <strong id="dscr">0.00x</strong>
-            </article>
-
-            <article class="metric-card ocean">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M3 21h18"></path><path d="m6 18 4-6 4 3 4-9"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Exit Value</span>
-                <button type="button" class="inline-help" data-term="Exit Value" aria-label="Ver definición de Exit Value">?</button>
-              </div>
-              <strong id="exitValue">$0</strong>
-            </article>
-
-            <article class="metric-card coral">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 20V10"></path><path d="m18 14-6-6-6 6"></path><path d="M5 4h14"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>IRR</span>
-                <button type="button" class="inline-help" data-term="IRR" aria-label="Ver definición de IRR">?</button>
-              </div>
-              <strong id="irr">0%</strong>
-            </article>
-
-            <article class="metric-card teal">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 1v22"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 1 1 0 7H6"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Loan Amount</span>
-                <button type="button" class="inline-help" data-term="Loan Amount" aria-label="Ver definición de Loan Amount">?</button>
-              </div>
-              <strong id="loanAmountMetric">$0</strong>
-            </article>
-
-            <article class="metric-card sand">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"></path><path d="M3 12l9 4.5 9-4.5"></path><path d="M3 16.5 12 21l9-4.5"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Initial Equity</span>
-                <button type="button" class="inline-help" data-term="Initial Equity" aria-label="Ver definición de Initial Equity">?</button>
-              </div>
-              <strong id="equityRequiredMetric">$0</strong>
-            </article>
-
-            <article class="metric-card sun">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M4 20h16"></path><path d="M7 16V8"></path><path d="M12 16V4"></path><path d="M17 16v-6"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Cash on Cash</span>
-                <button type="button" class="inline-help" data-term="Cash on Cash" aria-label="Ver definición de Cash on Cash">?</button>
-              </div>
-              <strong id="cashOnCash">0%</strong>
-            </article>
-
-            <article class="metric-card ocean">
-              <div class="metric-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2v20"></path><path d="M7 7h10"></path><path d="M5 12h14"></path><path d="M8 17h8"></path></svg>
-              </div>
-              <div class="metric-meta">
-                <span>Breakeven Occupancy</span>
-                <button type="button" class="inline-help" data-term="Breakeven Occupancy" aria-label="Ver definición de Breakeven Occupancy">?</button>
-              </div>
-              <strong id="breakEvenOccupancy">0%</strong>
-            </article>
-          </section>
-
-          <section class="panel executive-panel">
-            <div class="panel-head">
-              <div>
-                <span class="eyebrow">Executive Read</span>
-                <h3>Lectura automática del deal</h3>
-              </div>
-            </div>
-
-            <div class="deal-read-card">
-              <span id="dealScoreLabel" class="score-badge neutral">En revisión</span>
-              <h3 id="dealSummaryTitle">Esperando actualización</h3>
-              <p id="dealSummaryText">
-                Ajusta los inputs para generar una lectura más ejecutiva del activo.
-              </p>
-              <div id="riskFlags" class="flag-row"></div>
-            </div>
-          </section>
-
-          <section class="panel dictionary-panel">
-            <div class="panel-head">
-              <div>
-                <span class="eyebrow">Live Dictionary</span>
-                <h3>Consulta rápida</h3>
-              </div>
-              <button type="button" class="secondary-btn open-glossary">Open full dictionary</button>
-            </div>
-
-            <div id="dictionaryPreview" class="dictionary-preview-grid"></div>
-          </section>
-
-          <section class="panel table-panel">
-            <div class="panel-head">
-              <div>
-                <span class="eyebrow">Projection</span>
-                <h3>Proyección anual de cash flow</h3>
-              </div>
-            </div>
-
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Year</th>
-                    <th>Rent Annual</th>
-                    <th>NOI</th>
-                    <th>Debt Service</th>
-                    <th>Cash Flow</th>
-                  </tr>
-                </thead>
-                <tbody id="projectionBody"></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="panel table-panel">
-            <div class="panel-head">
-              <div>
-                <span class="eyebrow">Sensitivity</span>
-                <h3>Escenarios de renta vs valor</h3>
-              </div>
-            </div>
-
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Monthly Rent</th>
-                    <th>NOI Annual</th>
-                    <th>Value @ Exit Cap</th>
-                  </tr>
-                </thead>
-                <tbody id="sensitivityBody"></tbody>
-              </table>
-            </div>
-          </section>
+            <textarea name="message" placeholder="Tell us about your objective"></textarea>
+            <input type="hidden" id="profileSummary" name="profileSummary" />
+            <button class="btn btn-primary" type="submit">Prepare Message</button>
+            <p class="disclaimer" id="formNote">
+              This form opens an email draft. For a live CRM form, connect Formspree, HubSpot, Zapier, or your preferred backend.
+            </p>
+          </form>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
+  </main>
+
+  <div class="floating-actions" aria-label="Quick contact actions">
+    <a class="floating-assistant" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener" aria-label="Open VCC50000 AI Assistant">AI</a>
+    <a class="floating-whatsapp" href="https://wa.me/10000000000" target="_blank" rel="noopener" aria-label="Contact VCC50000 by WhatsApp">WA</a>
   </div>
 
-  <script src="app.js"></script>
+  <footer>
+    <div class="container footer-grid">
+      <div>© <span id="year"></span> VCC50000. All rights reserved.</div>
+      <div>Asset Management · Trading Intelligence · Florida Real Estate</div>
+      <div>
+        Informational content only. Services may be subject to applicable licenses, registrations, and professional requirements.
+      </div>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
 </body>
 </html>
