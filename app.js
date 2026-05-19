@@ -8,6 +8,16 @@ const resetProfile = document.getElementById('resetProfile');
 const profileSummary = document.getElementById('profileSummary');
 const form = document.getElementById('contactForm');
 
+const API_AGENT_ENDPOINT = '/api/vcc-agent';
+const apiAgentOpeners = document.querySelectorAll('[data-api-agent-open]');
+const apiChatPanel = document.getElementById('apiChatPanel');
+const apiChatClose = document.getElementById('apiChatClose');
+const apiChatForm = document.getElementById('apiChatForm');
+const apiChatInput = document.getElementById('apiChatInput');
+const apiChatMessages = document.getElementById('apiChatMessages');
+const apiChatSend = document.getElementById('apiChatSend');
+let apiAgentPreviousResponseId = null;
+
 const profile = {
   client: '',
   interest: [],
@@ -98,6 +108,114 @@ if (form) {
     );
 
     window.location.href = `mailto:contact@vcc50000.com?subject=${subject}&body=${body}`;
+  });
+}
+
+
+function openApiChat() {
+  if (!apiChatPanel) return;
+  apiChatPanel.classList.add('open');
+  apiChatPanel.setAttribute('aria-hidden', 'false');
+  setTimeout(() => apiChatInput && apiChatInput.focus(), 80);
+}
+
+function closeApiChat() {
+  if (!apiChatPanel) return;
+  apiChatPanel.classList.remove('open');
+  apiChatPanel.setAttribute('aria-hidden', 'true');
+}
+
+function appendApiMessage(role, text) {
+  if (!apiChatMessages) return;
+
+  const message = document.createElement('div');
+  message.className = `api-message ${role}`;
+  message.textContent = text;
+  apiChatMessages.appendChild(message);
+  apiChatMessages.scrollTop = apiChatMessages.scrollHeight;
+}
+
+function setApiChatLoading(isLoading) {
+  if (apiChatSend) {
+    apiChatSend.disabled = isLoading;
+    apiChatSend.textContent = isLoading ? 'Sending...' : 'Send';
+  }
+
+  if (apiChatInput) {
+    apiChatInput.disabled = isLoading;
+  }
+}
+
+apiAgentOpeners.forEach((button) => {
+  button.addEventListener('click', openApiChat);
+});
+
+if (apiChatClose) {
+  apiChatClose.addEventListener('click', closeApiChat);
+}
+
+if (apiChatPanel) {
+  apiChatPanel.addEventListener('click', (event) => {
+    if (event.target === apiChatPanel) {
+      closeApiChat();
+    }
+  });
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closeApiChat();
+  }
+});
+
+if (apiChatInput) {
+  apiChatInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      apiChatForm && apiChatForm.requestSubmit();
+    }
+  });
+}
+
+if (apiChatForm) {
+  apiChatForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const message = apiChatInput.value.trim();
+    if (!message) return;
+
+    appendApiMessage('user', message);
+    apiChatInput.value = '';
+    setApiChatLoading(true);
+
+    try {
+      const response = await fetch(API_AGENT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message,
+          profile,
+          profileSummary: (profileSummary && profileSummary.value) || '',
+          previousResponseId: apiAgentPreviousResponseId
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'The assistant could not answer right now.');
+      }
+
+      apiAgentPreviousResponseId = data.response_id || apiAgentPreviousResponseId;
+      appendApiMessage('assistant', data.reply || 'I did not receive a response. Please try again.');
+    } catch (error) {
+      appendApiMessage('assistant', `Connection error: ${error.message}`);
+    } finally {
+      setApiChatLoading(false);
+      apiChatInput && apiChatInput.focus();
+    }
   });
 }
 
