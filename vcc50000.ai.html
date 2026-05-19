@@ -28,7 +28,8 @@
 
       <div class="nav-actions">
         <a class="btn btn-outline" href="#onboarding">Explore</a>
-        <button class="btn btn-dark" data-api-agent-open type="button">Open Web Agent</button>
+        <button class="btn btn-red" type="button" data-principal-advisor>Asesor Principal.ai</button>
+        <a class="btn btn-dark" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Open AI Assistant</a>
         <a class="btn btn-primary" href="#contact">Book Consultation</a>
       </div>
 
@@ -48,7 +49,8 @@
           </p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#onboarding">Start Investor Profile</a>
-            <button class="btn btn-dark" data-api-agent-open type="button">Chat with Web Agent</button>
+            <button class="btn btn-red" type="button" data-principal-advisor>Asesor Principal.ai</button>
+            <a class="btn btn-dark" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Open VCC50000 AI</a>
             <a class="btn btn-outline" href="#real-estate">Explore Real Estate</a>
           </div>
           <div class="hero-note">
@@ -250,18 +252,11 @@
               Use the assistant as a guided entry point for asset management orientation, market intelligence questions, portfolio preparation, and Florida real estate buyer support.
             </p>
           </div>
-          <div class="assistant-boxes">
-            <div class="assistant-box">
-              <strong>VCC50000 Web Agent</strong>
-              <span>Use the OpenAI agent embedded directly on this website. It uses your investor profile selections as context.</span>
-              <button class="btn btn-primary" data-api-agent-open type="button">Launch Web Agent</button>
-            </div>
-
-            <div class="assistant-box assistant-box-secondary">
-              <strong>ChatGPT GPT Assistant</strong>
-              <span>Open the original GPT experience inside ChatGPT in a new tab.</span>
-              <a class="btn btn-outline" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Open in ChatGPT</a>
-            </div>
+          <div class="assistant-box">
+            <strong>VCC50000.ai Assistant</strong>
+            <span>Connect directly with the GPT assistant for structured guidance before scheduling a consultation.</span>
+            <a class="btn btn-primary" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener">Launch GPT Assistant</a>
+            <button class="btn btn-red assistant-red-btn" type="button" data-principal-advisor>Asesor Principal.ai</button>
           </div>
         </div>
       </div>
@@ -354,34 +349,37 @@
     </section>
   </main>
 
+  <button class="floating-principal-text" type="button" data-principal-advisor>Asesor Principal.ai</button>
+
   <div class="floating-actions" aria-label="Quick contact actions">
-    <button class="floating-assistant floating-agent" data-api-agent-open type="button" aria-label="Open VCC50000 Web Agent">AI</button>
+    <button class="floating-principal" type="button" data-principal-advisor aria-label="Open Asesor Principal.ai">AP</button>
+    <a class="floating-assistant" data-gpt-link href="https://chatgpt.com/g/g-69d308e63dec8191a773b8cf9cf13ddd-vcc50000-ai" target="_blank" rel="noopener" aria-label="Open VCC50000 AI Assistant">AI</a>
     <a class="floating-whatsapp" href="https://wa.me/10000000000" target="_blank" rel="noopener" aria-label="Contact VCC50000 by WhatsApp">WA</a>
   </div>
 
-  <aside class="api-chat-panel" id="apiChatPanel" aria-hidden="true" aria-label="VCC50000 Web Agent chat">
-    <div class="api-chat-card">
-      <div class="api-chat-header">
-        <div>
-          <strong>VCC50000 Web Agent</strong>
-          <span>Powered by your OpenAI prompt</span>
-        </div>
-        <button class="api-chat-close" id="apiChatClose" type="button" aria-label="Close chat">×</button>
+  <div class="advisor-modal" id="advisorModal" aria-hidden="true">
+    <div class="advisor-modal-backdrop" data-advisor-close></div>
+    <section class="advisor-panel" role="dialog" aria-modal="true" aria-labelledby="advisorTitle">
+      <button class="advisor-close" type="button" data-advisor-close aria-label="Close Asesor Principal.ai">×</button>
+      <div class="advisor-panel-head">
+        <span class="advisor-badge">OpenAI Agent</span>
+        <h2 id="advisorTitle">Asesor Principal.ai</h2>
+        <p>Escribe el tema o pregunta que quieres consultar. El mensaje se envía de forma segura a tu backend, que invoca el prompt creado en OpenAI.</p>
       </div>
 
-      <div class="api-chat-messages" id="apiChatMessages" aria-live="polite">
-        <div class="api-message assistant">
-          Hi, I am the VCC50000 Web Agent. Tell me your goal and I can help you organize the next step.
+      <div class="advisor-messages" id="advisorMessages" aria-live="polite">
+        <div class="advisor-message assistant">
+          Hola, soy Asesor Principal.ai. Cuéntame el tema que quieres revisar.
         </div>
       </div>
 
-      <form class="api-chat-form" id="apiChatForm">
-        <textarea id="apiChatInput" name="message" placeholder="Ask about portfolio strategy, trading intelligence, or Florida real estate..." required></textarea>
-        <button class="btn btn-primary" id="apiChatSend" type="submit">Send</button>
+      <form class="advisor-form" id="advisorForm">
+        <textarea id="advisorInput" name="message" placeholder="Ejemplo: necesito orientación para estructurar una estrategia de inversión..." required></textarea>
+        <button class="btn btn-red" id="advisorSubmit" type="submit">Enviar</button>
       </form>
-      <p class="api-chat-note">This assistant provides informational guidance only and does not replace licensed financial, legal, tax, or real estate advice.</p>
-    </div>
-  </aside>
+      <p class="advisor-note">La API Key se usa solo en el servidor. Nunca la coloques en el HTML ni en app.js.</p>
+    </section>
+  </div>
 
   <footer>
     <div class="container footer-grid">
@@ -393,6 +391,7 @@
     </div>
   </footer>
 
+  <script src="./config.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
